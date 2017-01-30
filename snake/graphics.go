@@ -2,24 +2,38 @@ package snake
 
 import (
 	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
-func (s *SnakeBody) Draw(w *glfw.Window) {
-	// TODO: Draw some stuff.
+const (
+	Width int = 640
+	Height int = 480
+
+	// The delta for creating a grid of 10px by 10px squares.
+	XDrawDelta float32 = 0.03125
+	YDrawDelta float32 = 0.041667
+)
+
+func (s *SnakeBody) Draw() {
+	if s == nil {
+		return
+	}
+	node := s
+	for node != nil {
+		gl.Begin(gl.QUADS)
+		gl.Color3f(0.0, 1.0, 0.0)  // Snakes are green, obviously!
+		gl.Vertex2f(-1.0 + XDrawDelta * node.x,  1.0 - YDrawDelta * (node.y + 1))
+		gl.Vertex2f(-1.0 + XDrawDelta * (node.x + 1), 1.0 - YDrawDelta * (node.y + 1))
+		gl.Vertex2f(-1.0 + XDrawDelta * (node.x + 1), 1.0 - YDrawDelta * node.y)
+		gl.Vertex2f(-1.0 + XDrawDelta * node.x, 1.0 - YDrawDelta * node.y)
+		gl.End();
+		node = node.Next
+	}
 }
 
-func (s *SnakeState) Draw(w *glfw.Window) {
+func (s *SnakeState) Draw() {
 	// TODO: Need some logic on what to draw, like if we lose, etc.
-	s.head.Draw(w)
 	gl.ClearColor(0.0, 0.0, 0.0, 0.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
-	gl.Begin(gl.QUADS)
-	gl.Color3f(1.0, 0.0, 0.0)
-	gl.Vertex2f(-0.5, -0.5);
-	gl.Vertex2f( 0.5, -0.5);
-	gl.Vertex2f( 0.5,  0.5);
-	gl.Vertex2f(-0.5,  0.5);
-	gl.End();
+	s.head.Draw()
 	gl.Flush();
 }

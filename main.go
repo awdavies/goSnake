@@ -22,7 +22,8 @@ func main() {
 	defer glfw.Terminate()
 
 	glfw.WindowHint(glfw.Resizable, glfw.False)
-	window, err := glfw.CreateWindow(640, 480, kWindowTitle, nil, nil)
+	window, err := glfw.CreateWindow(snake.Width, snake.Height, 
+																	 kWindowTitle, nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +40,8 @@ func main() {
 	// Main loop.
 	state := snake.NewSnakeState()
 	for !window.ShouldClose() {
-		state.Draw(window)
+		state.Update()
+		state.Draw()
 		window.SwapBuffers()
 		glfw.PollEvents()
 	}
