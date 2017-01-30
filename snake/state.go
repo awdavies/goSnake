@@ -1,7 +1,9 @@
 package snake
 
 import (
+	"math/rand"
 	"github.com/go-gl/glfw/v3.2/glfw"
+	"time"
 )
 
 type Direction int
@@ -18,10 +20,10 @@ type GridState struct {
 }
 
 type Food struct {
-	eaten bool
+	IsEaten bool
 
-	x int
-	y int
+	X int
+	Y int
 }
 
 type SnakeBody struct {
@@ -38,6 +40,7 @@ type SnakeState struct {
 	Grid [][]*GridState
 	InputQueue []glfw.Key
 	KeyPressed []bool
+	NextFood *Food
 }
 
 func KeyToDirection(k glfw.Key) Direction {
@@ -68,6 +71,16 @@ func DirectionToKey(d Direction) glfw.Key {
 	return glfw.KeyRight
 }
 
+func (s *SnakeState) GenerateFoodCoords() (int, int) {
+	food_x := rand.Int() % GridWidth
+	food_y := rand.Int() % GridHeight
+	for s.Grid[food_x][food_y].ContainsSnake {
+		food_x = rand.Int() % GridWidth
+		food_y = rand.Int() % GridHeight
+	}
+	return food_x, food_y
+}
+
 func NewSnakeState() (state *SnakeState) {
 	snake_head := &SnakeBody{nil, nil, 2, 0}
 	snake_head.Next = &SnakeBody{nil, nil, 1, 0}
@@ -94,6 +107,9 @@ func NewSnakeState() (state *SnakeState) {
 	// InputQueue always has one element.
 	state.InputQueue = append(state.InputQueue, glfw.KeyRight)
 	state.KeyPressed = make([]bool, 4)
+	rand.Seed(time.Now().UTC().UnixNano())
+	food_x, food_y := state.GenerateFoodCoords()
+	state.NextFood = &Food{IsEaten: false, X: food_x, Y: food_y}
 	return
 }
 

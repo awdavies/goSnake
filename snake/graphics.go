@@ -46,5 +46,8 @@ func (s *SnakeState) Draw() {
 	gl.ClearColor(0.0, 0.0, 0.0, 0.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	s.head.Draw()
+	if !s.NextFood.IsEaten {
+		DrawSquareAt(s.NextFood.X, s.NextFood.Y, 1.0, 0.0, 0.0)
+	}
 	gl.Flush();
 }
