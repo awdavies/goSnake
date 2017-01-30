@@ -8,11 +8,16 @@ This was hacked together over a day or so, so there's lots of unused code, but i
 ## Build Instructions.
 
 ```
-$ go get -u github.com/go-gl/glfw/v3.2/glfw 
-$ go get -u github.com/go-gl/gl/v2.1/gl 
+$ go get -u github.com/go-gl/glfw/v3.2/glfw
+$ go get -u github.com/go-gl/gl/v2.1/gl
 $ go build main.go
 $ ./main
 ```
+
+## Releases
+
+The binary releases are built for Mac OSX and Linux (specifically amd64.  Will
+get to 32 bit release when I'm feelin like it).
 
 ## Credits.
 
