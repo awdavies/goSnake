@@ -157,7 +157,7 @@ func (s *SnakeState) Update(w *glfw.Window) {
 		return
 	}
 	s.PollKeyPresses(w)
-	if elapsed_time > 0.1 {
+	if elapsed_time > 0.03333333333 {
 		if s.NextFood.IsEaten {
 			s.NextFood.X, s.NextFood.Y = s.GenerateFoodCoords()
 			s.NextFood.IsEaten = false
