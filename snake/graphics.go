@@ -16,23 +16,27 @@ const (
 	YDrawDelta float32 = 0.041667
 )
 
+func DrawSquareAt(x int, y int, r, g, b float32) {
+	gl.Begin(gl.QUADS)
+	gl.Color3f(r, g, b)  // Snakes are green, obviously!
+	gl.Vertex2f(-1.0 + XDrawDelta * float32(x),
+							 1.0 - YDrawDelta * float32(y + 1))
+	gl.Vertex2f(-1.0 + XDrawDelta * float32(x + 1),
+							 1.0 - YDrawDelta * float32(y + 1))
+	gl.Vertex2f(-1.0 + XDrawDelta * float32(x + 1),
+						   1.0 - YDrawDelta * float32(y))
+	gl.Vertex2f(-1.0 + XDrawDelta * float32(x),
+							 1.0 - YDrawDelta * float32(y))
+	gl.End();
+}
+
 func (s *SnakeBody) Draw() {
 	if s == nil {
 		return
 	}
 	node := s
 	for node != nil {
-		gl.Begin(gl.QUADS)
-		gl.Color3f(0.0, 1.0, 0.0)  // Snakes are green, obviously!
-		gl.Vertex2f(-1.0 + XDrawDelta * float32(node.X),  
-								 1.0 - YDrawDelta * float32(node.Y + 1))
-		gl.Vertex2f(-1.0 + XDrawDelta * float32(node.X + 1), 
-								 1.0 - YDrawDelta * float32(node.Y + 1))
-		gl.Vertex2f(-1.0 + XDrawDelta * float32(node.X + 1), 
-							   1.0 - YDrawDelta * float32(node.Y))
-		gl.Vertex2f(-1.0 + XDrawDelta * float32(node.X), 
-								 1.0 - YDrawDelta * float32(node.Y))
-		gl.End();
+		DrawSquareAt(node.X, node.Y, 0, 1.0, 0)
 		node = node.Next
 	}
 }
