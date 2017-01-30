@@ -41,6 +41,7 @@ type SnakeState struct {
 	InputQueue []glfw.Key
 	KeyPressed []bool
 	NextFood *Food
+	GrowLength int
 }
 
 func KeyToDirection(k glfw.Key) Direction {
@@ -82,6 +83,8 @@ func (s *SnakeState) GenerateFoodCoords() (int, int) {
 }
 
 func NewSnakeState() (state *SnakeState) {
+	rand.Seed(time.Now().UTC().UnixNano())  // Generates new seed for food spawn.
+
 	snake_head := &SnakeBody{nil, nil, 2, 0}
 	snake_head.Next = &SnakeBody{nil, nil, 1, 0}
 	snake_head.Next.Next = &SnakeBody{nil, nil, 0, 0}
@@ -107,9 +110,9 @@ func NewSnakeState() (state *SnakeState) {
 	// InputQueue always has one element.
 	state.InputQueue = append(state.InputQueue, glfw.KeyRight)
 	state.KeyPressed = make([]bool, 4)
-	rand.Seed(time.Now().UTC().UnixNano())
 	food_x, food_y := state.GenerateFoodCoords()
 	state.NextFood = &Food{IsEaten: false, X: food_x, Y: food_y}
+	state.GrowLength = 0
 	return
 }
 
@@ -149,13 +152,16 @@ func (s *SnakeState) PollKeyPresses(w *glfw.Window) {
 func (s *SnakeState) Update(w *glfw.Window) {
 	current_time := glfw.GetTime()
 	elapsed_time := current_time - s.lastUpdate
-
-	// TODO: Do something else instead?
+	// TODO: Do something else instead?  A "you died" screen?
 	if s.dead {
 		return
 	}
 	s.PollKeyPresses(w)
 	if elapsed_time > 0.1 {
+		if s.NextFood.IsEaten {
+			s.NextFood.X, s.NextFood.Y = s.GenerateFoodCoords()
+			s.NextFood.IsEaten = false
+		}
 		node := s.head
 		// Figure out the next move for the head node.
 		next_move := s.InputQueue[0]
@@ -163,6 +169,9 @@ func (s *SnakeState) Update(w *glfw.Window) {
 			s.InputQueue = s.InputQueue[1:]  // Pops head from queue.
 		}
 		s.Grid[s.head.X][s.head.Y].Movement = KeyToDirection(next_move)
+		// Growth check occurs before node iteration, as the snake techically isn't
+		// moving when growing.
+		growing := s.GrowLength > 0
 		for ; node != nil; node = node.Next {
 			s.Grid[node.X][node.Y].ContainsSnake = false
 			var new_x, new_y int
@@ -195,7 +204,20 @@ func (s *SnakeState) Update(w *glfw.Window) {
 				s.dead = true
 				return
 			}
+			if new_x == s.NextFood.X && new_y == s.NextFood.Y {
+				s.NextFood.IsEaten = true
+				s.GrowLength += 3
+			}
 			s.Grid[new_x][new_y].ContainsSnake = true
+			if growing {
+				s.GrowLength -= 1
+				new_snake_part := &SnakeBody{node.Next, node.Tail, node.X, node.Y}
+				node.Next = new_snake_part
+				s.Grid[node.X][node.Y].ContainsSnake = true
+				node.X = new_x
+				node.Y = new_y
+				break
+			}
 			node.X = new_x
 			node.Y = new_y
 		}
