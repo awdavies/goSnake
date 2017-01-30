@@ -18,7 +18,7 @@ const (
 
 func DrawSquareAt(x int, y int, r, g, b float32) {
 	gl.Begin(gl.QUADS)
-	gl.Color3f(r, g, b)  // Snakes are green, obviously!
+	gl.Color3f(r, g, b)
 	gl.Vertex2f(-1.0 + XDrawDelta * float32(x),
 							 1.0 - YDrawDelta * float32(y + 1))
 	gl.Vertex2f(-1.0 + XDrawDelta * float32(x + 1),
@@ -36,7 +36,7 @@ func (s *SnakeBody) Draw() {
 	}
 	node := s
 	for node != nil {
-		DrawSquareAt(node.X, node.Y, 0, 1.0, 0)
+		DrawSquareAt(node.X, node.Y, 0, 1.0, 0)  // Snakes are green, obviously!
 		node = node.Next
 	}
 }
