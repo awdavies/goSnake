@@ -206,7 +206,7 @@ func (s *SnakeState) Update(w *glfw.Window) {
 			}
 			if new_x == s.NextFood.X && new_y == s.NextFood.Y {
 				s.NextFood.IsEaten = true
-				s.GrowLength += 3
+				s.GrowLength += 4
 			}
 			s.Grid[new_x][new_y].ContainsSnake = true
 			if growing {
