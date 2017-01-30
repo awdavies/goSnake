@@ -40,7 +40,7 @@ func main() {
 	// Main loop.
 	state := snake.NewSnakeState()
 	for !window.ShouldClose() {
-		state.Update()
+		state.Update(window)
 		state.Draw()
 		window.SwapBuffers()
 		glfw.PollEvents()

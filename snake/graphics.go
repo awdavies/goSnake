@@ -8,6 +8,9 @@ const (
 	Width int = 640
 	Height int = 480
 
+	GridWidth = 64
+	GridHeight = 48
+
 	// The delta for creating a grid of 10px by 10px squares.
 	XDrawDelta float32 = 0.03125
 	YDrawDelta float32 = 0.041667
@@ -21,10 +24,14 @@ func (s *SnakeBody) Draw() {
 	for node != nil {
 		gl.Begin(gl.QUADS)
 		gl.Color3f(0.0, 1.0, 0.0)  // Snakes are green, obviously!
-		gl.Vertex2f(-1.0 + XDrawDelta * node.x,  1.0 - YDrawDelta * (node.y + 1))
-		gl.Vertex2f(-1.0 + XDrawDelta * (node.x + 1), 1.0 - YDrawDelta * (node.y + 1))
-		gl.Vertex2f(-1.0 + XDrawDelta * (node.x + 1), 1.0 - YDrawDelta * node.y)
-		gl.Vertex2f(-1.0 + XDrawDelta * node.x, 1.0 - YDrawDelta * node.y)
+		gl.Vertex2f(-1.0 + XDrawDelta * float32(node.X),  
+								 1.0 - YDrawDelta * float32(node.Y + 1))
+		gl.Vertex2f(-1.0 + XDrawDelta * float32(node.X + 1), 
+								 1.0 - YDrawDelta * float32(node.Y + 1))
+		gl.Vertex2f(-1.0 + XDrawDelta * float32(node.X + 1), 
+							   1.0 - YDrawDelta * float32(node.Y))
+		gl.Vertex2f(-1.0 + XDrawDelta * float32(node.X), 
+								 1.0 - YDrawDelta * float32(node.Y))
 		gl.End();
 		node = node.Next
 	}
