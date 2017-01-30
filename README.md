@@ -1,7 +1,9 @@
-# goSnake
+# GO! Snake
 Cheesy snake game implemented using GLFW and Go
 
 This was hacked together over a day or so, so there's lots of unused code, but it basically works!
+
+[![screenshot](https://github.com/awdavies/goSnake/raw/master/img/screenie.png)](#)
 
 ## Build Instructions.
 
