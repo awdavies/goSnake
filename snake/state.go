@@ -37,7 +37,6 @@ type SnakeState struct {
 	lastUpdate float64  // Last update timewise.
 	Grid [][]*GridState
 	LastKey glfw.Key  // Last pressed important key.
-	NextMove chan Direction
 }
 
 func KeyToDirection(k glfw.Key) Direction {
@@ -54,6 +53,20 @@ func KeyToDirection(k glfw.Key) Direction {
 	return kDirRight
 }
 
+func DirectionToKey(d Direction) glfw.Key {
+	switch d {
+		case kDirUp:
+			return glfw.KeyUp
+		case kDirDown:
+			return glfw.KeyDown
+		case kDirLeft:
+			return glfw.KeyLeft
+		case kDirRight:
+			return glfw.KeyRight
+	}
+	return glfw.KeyRight
+}
+
 func NewSnakeState() (state *SnakeState) {
 	snake_head := &SnakeBody{nil, nil, 2, 0}
 	snake_head.Next = &SnakeBody{nil, nil, 1, 0}
@@ -62,7 +75,7 @@ func NewSnakeState() (state *SnakeState) {
 	state = &SnakeState {
 		dead: false,
 		head: snake_head,
-	}	
+	}
 	// Allocate direction grid.
 	state.Grid = make([][]*GridState, GridWidth)
 	for i := 0; i < GridWidth; i++ {
@@ -76,35 +89,44 @@ func NewSnakeState() (state *SnakeState) {
 		state.Grid[node.X][node.Y].ContainsSnake = true
 	}
 	state.lastUpdate = glfw.GetTime()
-	state.NextMove = make(chan Direction, 1024)
 	return
 }
 
-func PollKeyPressHelper(w *glfw.Window, s *SnakeState, k glfw.Key) {
+func PollKeyPressHelper(w *glfw.Window, s *SnakeState, k glfw.Key) bool {
+	// There are still some timing issues when switching directions rapidly.
 	key_state := w.GetKey(k)
 	if key_state == glfw.Press && s.LastKey != k {
 		l := s.LastKey
-		if (k == glfw.KeyUp && l == glfw.KeyDown) || 
+		if (k == glfw.KeyUp && l == glfw.KeyDown) ||
 			 (k == glfw.KeyDown && l == glfw.KeyUp) ||
 			 (k == glfw.KeyLeft && l == glfw.KeyRight) ||
 			 (k == glfw.KeyRight && l == glfw.KeyLeft) {
-			return
+			return false
 		}
 		s.LastKey = k
-		s.NextMove <- KeyToDirection(k)
+		return true
 	}
+	return false
 }
 
 func (s *SnakeState) PollKeyPresses(w *glfw.Window) {
-	PollKeyPressHelper(w, s, glfw.KeyRight)
-	PollKeyPressHelper(w, s, glfw.KeyLeft)
-	PollKeyPressHelper(w, s, glfw.KeyUp)
-	PollKeyPressHelper(w, s, glfw.KeyDown)
+	if PollKeyPressHelper(w, s, glfw.KeyRight) {
+		return
+	}
+	if PollKeyPressHelper(w, s, glfw.KeyLeft) {
+		return
+	}
+	if PollKeyPressHelper(w, s, glfw.KeyUp) {
+		return
+	}
+	if PollKeyPressHelper(w, s, glfw.KeyDown) {
+		return
+	}
 }
 
 func (s *SnakeState) Update(w *glfw.Window) {
 	current_time := glfw.GetTime()
-	elapsed_time := current_time - s.lastUpdate 
+	elapsed_time := current_time - s.lastUpdate
 
 	// TODO: Do something else instead?
 	if s.dead {
@@ -113,16 +135,9 @@ func (s *SnakeState) Update(w *glfw.Window) {
 
 	s.PollKeyPresses(w)
 	if elapsed_time > 0.1 {
-		var next_move Direction
 		node := s.head
 		// Figure out the next move for the head node.
-		select {
-			case next_move = <-s.NextMove:
-				break
-			default:
-				next_move = KeyToDirection(s.LastKey)
-		}
-		s.Grid[node.X][node.Y].Movement = next_move
+		s.Grid[node.X][node.Y].Movement = KeyToDirection(s.LastKey)
 		for ; node != nil; node = node.Next {
 			s.Grid[node.X][node.Y].ContainsSnake = false
 			var new_x, new_y int
@@ -145,8 +160,8 @@ func (s *SnakeState) Update(w *glfw.Window) {
 				}
 			}
 			// We're dead if we're outside the grid.
-			if new_x >= GridWidth || new_y >= GridHeight || 
-				 new_y < 0 || new_y < 0 {
+			if new_x >= GridWidth || new_y >= GridHeight ||
+				 new_y < 0 || new_x < 0 {
 				s.dead = true
 				return
 			}
