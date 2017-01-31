@@ -53,7 +53,7 @@ get to 32 bit release when I'm feelin like it):
 
 * Windows (Not yet...  Eventually, though)
 
-### Running/Installing.
+### Running Release Download.
 
 #### Mac OSX/Linux
 ```
