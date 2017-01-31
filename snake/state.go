@@ -14,6 +14,10 @@ const (
 	kDirDown  Direction = 3
 )
 
+const (
+	UpdateDelay float64 = 0.05  // 20fps updates.
+)
+
 type GridState struct {
 	Movement Direction
 	ContainsSnake bool
@@ -157,7 +161,7 @@ func (s *SnakeState) Update(w *glfw.Window) {
 		return
 	}
 	s.PollKeyPresses(w)
-	if elapsed_time > 0.03333333333 {
+	if elapsed_time > UpdateDelay {
 		if s.NextFood.IsEaten {
 			s.NextFood.X, s.NextFood.Y = s.GenerateFoodCoords()
 			s.NextFood.IsEaten = false
