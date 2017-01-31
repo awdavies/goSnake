@@ -53,7 +53,10 @@ get to 32 bit release when I'm feelin like it):
 
 * Windows (Not yet...  Eventually, though)
 
-### Running Release Download.
+### Running the Thing.
+
+If you're not building it, this is how you run the thing you downloaded from the
+Downloads/Releases section.
 
 #### Mac OSX/Linux
 ```
