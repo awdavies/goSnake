@@ -19,7 +19,8 @@ $ ./main
 ### Windows
 
 Windows requires Golang 1.4+ and a MinGW installation.  So far I've only ever
-built it in 64 bit, so you're on your own if you want to set it up with 32 bit.
+built it in 64 bit on Windows 10, so you're on your own if you want to set it 
+up with 32 bit.
 
 ### Mac OSX
 
@@ -51,7 +52,7 @@ get to 32 bit release when I'm feelin like it):
 
 * [Mac OSX](https://github.com/awdavies/goSnake/raw/master/release/mac/main)
 
-* Windows (Not yet...  Eventually, though)
+* [Windows 64-bit](https://github.com/awdavies/goSnake/raw/master/release/windows/main.exe)
 
 ### Running the Thing.
 
@@ -67,7 +68,7 @@ $ ./main
 
 #### Windows
 
-Pending...
+Double-click on it!
 
 ## Credits.
 
