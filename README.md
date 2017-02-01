@@ -19,7 +19,7 @@ $ ./main
 ### Windows
 
 Windows requires Golang 1.4+ and a MinGW installation.  So far I've only ever
-built it in 64 bit on Windows 10, so you're on your own if you want to set it 
+built it in 64 bit on Windows 10, so you're on your own if you want to set it
 up with 32 bit.
 
 ### Mac OSX
@@ -28,7 +28,7 @@ Install Go with homebrew, then it should build accordingly.
 
 ### Linux
 
-Requires xorg-dev abd libmesa-dev (or similar) packages to compile.  It may need
+Requires xorg-dev and libmesa-dev (or similar) packages to compile.  It may need
 similar X11 or Mesa-derived libraries to run, but I've not gotten around to
 testing this.
 
